@@ -78,7 +78,7 @@
             class="week-drop__slideshow drop-slideshow"
             data-slideshow
             aria-roledescription="carousel"
-            aria-label="Featured baits this week"
+            aria-label="Layton&apos;s Baits highlights"
           >
             <div class="drop-slideshow__viewport">
               <div class="drop-slideshow__track">
@@ -87,12 +87,21 @@
                   data-slide="0"
                   role="group"
                   aria-roledescription="slide"
-                  aria-label="1 of 3"
+                  aria-label="Slide 1 of 2: Stick worm"
                 >
-                  <div class="drop-slideshow__visual">
-                    <div class="drop-slideshow__placeholder" aria-hidden="true"></div>
+                  <div class="drop-slideshow__slide-frame">
+                    <img
+                      class="drop-slideshow__img"
+                      src="stick-worm-slide.png"
+                      alt="Layton&apos;s Baits — stick worm spotlight"
+                      width="1200"
+                      height="675"
+                      loading="eager"
+                      fetchpriority="high"
+                      decoding="async"
+                      onerror="this.classList.add('drop-slideshow__img--missing')"
+                    />
                   </div>
-                  <h3 class="drop-slideshow__name">Strawberry Jam Stick Worm</h3>
                 </article>
                 <article
                   class="drop-slideshow__slide"
@@ -100,25 +109,20 @@
                   role="group"
                   aria-roledescription="slide"
                   aria-hidden="true"
-                  aria-label="2 of 3"
+                  aria-label="Slide 2 of 2: Swimmer"
                 >
-                  <div class="drop-slideshow__visual">
-                    <div class="drop-slideshow__placeholder" aria-hidden="true"></div>
+                  <div class="drop-slideshow__slide-frame">
+                    <img
+                      class="drop-slideshow__img"
+                      src="swimmer-slide.png"
+                      alt="Layton&apos;s Baits — swimmer spotlight"
+                      width="1200"
+                      height="675"
+                      loading="lazy"
+                      decoding="async"
+                      onerror="this.classList.add('drop-slideshow__img--missing')"
+                    />
                   </div>
-                  <h3 class="drop-slideshow__name">Bluegill Flash Swimbait</h3>
-                </article>
-                <article
-                  class="drop-slideshow__slide"
-                  data-slide="2"
-                  role="group"
-                  aria-roledescription="slide"
-                  aria-hidden="true"
-                  aria-label="3 of 3"
-                >
-                  <div class="drop-slideshow__visual">
-                    <div class="drop-slideshow__placeholder" aria-hidden="true"></div>
-                  </div>
-                  <h3 class="drop-slideshow__name">Midnight Craw</h3>
                 </article>
               </div>
             </div>

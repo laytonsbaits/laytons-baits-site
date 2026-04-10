@@ -2219,19 +2219,20 @@ body.modal-open {
 }
 
 .drop-slideshow {
-  max-width: 36rem;
+  width: 100%;
+  max-width: 100%;
   margin-inline: auto;
 }
 
 .drop-slideshow__viewport {
   position: relative;
   width: 100%;
-  aspect-ratio: 5 / 4;
-  max-height: min(72vh, 420px);
+  aspect-ratio: 16 / 9;
+  max-height: min(78vh, 640px);
   margin-inline: auto;
   border-radius: 12px;
   overflow: hidden;
-  background: linear-gradient(165deg, #161616 0%, #0e0e0e 100%);
+  background: linear-gradient(165deg, #121218 0%, #0a0a0f 50%, #0e0c14 100%);
   border: 1px solid rgba(255, 255, 255, 0.08);
   box-shadow: 0 20px 56px rgba(0, 0, 0, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.04);
 }
@@ -2246,9 +2247,9 @@ body.modal-open {
   inset: 0;
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: stretch;
   justify-content: center;
-  padding: 1.5rem 1.25rem 1.25rem;
+  padding: 0;
   opacity: 0;
   visibility: hidden;
   transition: opacity 0.55s ease, visibility 0.55s ease;
@@ -2261,34 +2262,31 @@ body.modal-open {
   z-index: 1;
 }
 
-.drop-slideshow__visual {
-  flex: 1;
+/* Branded slide art: contain = no crop on baked-in text; letterbox on dark */
+.drop-slideshow__slide-frame {
+  position: absolute;
+  inset: 0;
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 100%;
-  min-height: 0;
+  padding: clamp(0.35rem, 1.5vw, 0.75rem);
+  box-sizing: border-box;
+  pointer-events: none;
 }
 
-.drop-slideshow__placeholder {
-  width: min(72%, 280px);
-  aspect-ratio: 1;
-  border-radius: 10px;
-  background: linear-gradient(145deg, #252525 0%, #1a1a1a 45%, #222 100%);
-  border: 1px dashed rgba(255, 255, 255, 0.12);
-  box-shadow: inset 0 2px 16px rgba(0, 0, 0, 0.45);
+.drop-slideshow__img {
+  display: block;
+  max-width: 100%;
+  max-height: 100%;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  object-position: center;
+  border-radius: 8px;
 }
 
-.drop-slideshow__name {
-  margin: 1rem 0 0;
-  font-family: var(--font-display);
-  font-size: clamp(1.125rem, 3vw, 1.5rem);
-  font-weight: 700;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-  text-align: center;
-  color: var(--text);
-  line-height: 1.15;
+.drop-slideshow__img.drop-slideshow__img--missing {
+  display: none;
 }
 
 .drop-slideshow__controls {
