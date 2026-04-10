@@ -1,0 +1,4 @@
+# Netlify: map clean paths to the static files (optional; nav uses relative URLs in HTML)
+/the-drop    /the-drop/index.html   200
+/about       /about/index.html      200
+/contact     /contact/index.html    200

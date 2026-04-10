@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Layton&apos;s Baits — Hand-Poured Limited Drops</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Barlow:ital,wght@0,400;0,500;0,600;0,700;1,500&family=Oswald:wght@500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+    <script src="https://sdks.shopifycdn.com/buy-button/latest/buy-button-storefront.min.js"></script>
+  </head>
+  <body>
+    <div class="grit-overlay" aria-hidden="true"></div>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <header class="site-header">
+      <div class="container header-inner">
+        <a href="index.html" class="logo">
+          <img
+            src="logo.png"
+            width="160"
+            height="40"
+            alt="Layton Baits"
+            class="logo-img"
+          />
+        </a>
+        <nav class="nav" aria-label="Primary">
+          <a class="nav__link--home" href="index.html" aria-current="page">Home</a>
+          <a class="nav__link--drop" href="the-drop/index.html">The Drop</a>
+          <a class="nav__link--about" href="about/index.html">About</a>
+          <a class="nav__link--contact" href="contact/index.html">Contact</a>
+        </nav>
+        <div class="header-tools">
+          <div id="shopify-cart-host" class="nav-cart-host"></div>
+          <button
+            type="button"
+            class="menu-toggle"
+            aria-expanded="false"
+            aria-controls="mobile-nav"
+            aria-label="Open menu"
+          >
+            <span class="menu-bar"></span>
+            <span class="menu-bar"></span>
+          </button>
+        </div>
+        <script src="shopify-cart-global.js"></script>
+      </div>
+      <div id="mobile-nav" class="mobile-nav" hidden>
+        <a href="index.html" aria-current="page">Home</a>
+        <a href="the-drop/index.html">The Drop</a>
+        <a href="about/index.html">About</a>
+        <a href="contact/index.html">Contact</a>
+      </div>
+    </header>
+
+    <main id="main">
+      <section class="hero" aria-label="Intro">
+        <div class="hero-frame">
+          <img
+            class="hero-img"
+            src="hero.png"
+            alt=""
+            width="1920"
+            height="1080"
+            decoding="async"
+            fetchpriority="high"
+          />
+        </div>
+      </section>
+
+      <section id="week-drop" class="week-drop section" aria-labelledby="week-drop-heading">
+        <div class="container">
+          <h2 id="week-drop-heading" class="week-drop__title">This Week&apos;s Drop</h2>
+          <div
+            class="week-drop__slideshow drop-slideshow"
+            data-slideshow
+            aria-roledescription="carousel"
+            aria-label="Featured baits this week"
+          >
+            <div class="drop-slideshow__viewport">
+              <div class="drop-slideshow__track">
+                <article
+                  class="drop-slideshow__slide is-active"
+                  data-slide="0"
+                  role="group"
+                  aria-roledescription="slide"
+                  aria-label="1 of 3"
+                >
+                  <div class="drop-slideshow__visual">
+                    <div class="drop-slideshow__placeholder" aria-hidden="true"></div>
+                  </div>
+                  <h3 class="drop-slideshow__name">Strawberry Jam Stick Worm</h3>
+                </article>
+                <article
+                  class="drop-slideshow__slide"
+                  data-slide="1"
+                  role="group"
+                  aria-roledescription="slide"
+                  aria-hidden="true"
+                  aria-label="2 of 3"
+                >
+                  <div class="drop-slideshow__visual">
+                    <div class="drop-slideshow__placeholder" aria-hidden="true"></div>
+                  </div>
+                  <h3 class="drop-slideshow__name">Bluegill Flash Swimbait</h3>
+                </article>
+                <article
+                  class="drop-slideshow__slide"
+                  data-slide="2"
+                  role="group"
+                  aria-roledescription="slide"
+                  aria-hidden="true"
+                  aria-label="3 of 3"
+                >
+                  <div class="drop-slideshow__visual">
+                    <div class="drop-slideshow__placeholder" aria-hidden="true"></div>
+                  </div>
+                  <h3 class="drop-slideshow__name">Midnight Craw</h3>
+                </article>
+              </div>
+            </div>
+            <div class="drop-slideshow__controls">
+              <button
+                type="button"
+                class="drop-slideshow__arrow drop-slideshow__arrow--prev"
+                aria-label="Previous slide"
+                data-slideshow-prev
+              >
+                <span aria-hidden="true">‹</span>
+              </button>
+              <div class="drop-slideshow__dots" data-slideshow-dots></div>
+              <button
+                type="button"
+                class="drop-slideshow__arrow drop-slideshow__arrow--next"
+                aria-label="Next slide"
+                data-slideshow-next
+              >
+                <span aria-hidden="true">›</span>
+              </button>
+            </div>
+            <div class="week-drop__cta-wrap">
+              <a class="week-drop__cta" href="the-drop/index.html">View The Drop</a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="story" class="story section">
+        <div class="container story-grid">
+          <div class="story-copy">
+            <p class="section-kicker">Why Layton&apos;s Baits</p>
+            <h2 class="story-headline">
+              BUILT TO GET <span class="story-headline-accent">BIT</span>.
+            </h2>
+            <p>
+              Layton&apos;s Baits is about more than looks. We pour in limited runs &mdash; bold
+              color, scent-infused formulas, and real attention to detail &mdash; so what you get
+              isn&apos;t shelf filler. It&apos;s built to stand out, fish clean, and get bit in the
+              water that matters.
+            </p>
+            <ul class="story-list">
+              <li>Hand-poured soft plastics</li>
+              <li>Scent-infused formulas</li>
+              <li>Bold color and flash</li>
+              <li>Built for real bite appeal</li>
+            </ul>
+          </div>
+          <div class="story-panel story-panel--purpose">
+            <h3 class="story-panel__title">REAL BAIT. REAL PURPOSE.</h3>
+            <p class="story-panel__text">
+              Every bait is designed to bring together color, scent, action, and confidence in one
+              clean presentation.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section id="signup" class="signup section">
+        <div class="container signup-wrap">
+          <div class="signup-panel">
+            <p class="section-kicker signup-kicker">Don&apos;t miss the next pour</p>
+            <h2 class="signup-title">Get the drop first</h2>
+            <p class="signup-lede">
+              Weekly pours and limited batches move fast. Join the list for the next drop,
+              restocks, and when it&apos;s gone, it&apos;s gone alerts.
+            </p>
+            <form class="signup-form" id="signup-form" novalidate>
+              <label class="signup-label" for="email">Email address</label>
+              <div class="signup-row">
+                <input
+                  id="email"
+                  name="email"
+                  type="email"
+                  autocomplete="email"
+                  placeholder="you@email.com"
+                  required
+                />
+                <button type="submit" class="signup-submit">Join Email List</button>
+              </div>
+              <p class="signup-disclaimer">
+                By subscribing you agree to receive marketing emails from Layton&apos;s Baits.
+                Unsubscribe anytime.
+              </p>
+              <p class="signup-feedback" id="signup-feedback" role="status" aria-live="polite"></p>
+            </form>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="container footer-wrap">
+        <div class="footer-main">
+          <div class="footer-brand-block">
+            <span class="footer-brand">Layton&apos;s Baits</span>
+            <p class="footer-address">
+              Alabaster, AL<br />
+              Hand-poured. Field tested.
+            </p>
+          </div>
+          <nav class="footer-nav-columns" aria-label="Footer">
+            <div class="footer-links">
+              <span class="footer-heading">The Drop</span>
+              <a href="the-drop/index.html">Shop the drop</a>
+              <a href="#week-drop">This week&apos;s preview</a>
+            </div>
+            <div class="footer-links">
+              <span class="footer-heading">Company</span>
+              <a href="about/index.html">About</a>
+              <a href="#">Warranty</a>
+            </div>
+            <div class="footer-links">
+              <span class="footer-heading">Contact</span>
+              <a href="contact/index.html">Get in touch</a>
+              <a href="mailto:laytonsbaits@gmail.com">laytonsbaits@gmail.com</a>
+            </div>
+          </nav>
+        </div>
+        <div class="footer-bottom">
+          <p class="footer-note">© <span id="year"></span> Layton&apos;s Baits. All rights reserved.</p>
+          <div class="footer-legal">
+            <a href="#">Privacy</a>
+            <a href="#">Terms</a>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    <script src="app.js"></script>
+  </body>
+</html>

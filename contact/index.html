@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Contact — Layton&apos;s Baits | Get in Touch</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Barlow:ital,wght@0,400;0,500;0,600;0,700;1,500&family=Oswald:wght@500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="../styles.css" />
+    <script src="https://sdks.shopifycdn.com/buy-button/latest/buy-button-storefront.min.js"></script>
+  </head>
+  <body>
+    <div class="grit-overlay" aria-hidden="true"></div>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <header class="site-header">
+      <div class="container header-inner">
+        <a href="../index.html" class="logo">
+          <img
+            src="../logo.png"
+            width="160"
+            height="40"
+            alt="Layton Baits"
+            class="logo-img"
+          />
+        </a>
+        <nav class="nav" aria-label="Primary">
+          <a class="nav__link--home" href="../index.html">Home</a>
+          <a class="nav__link--drop" href="../the-drop/index.html">The Drop</a>
+          <a class="nav__link--about" href="../about/index.html">About</a>
+          <a class="nav__link--contact" href="index.html" aria-current="page">Contact</a>
+        </nav>
+        <div class="header-tools">
+          <div id="shopify-cart-host" class="nav-cart-host"></div>
+          <button
+            type="button"
+            class="menu-toggle"
+            aria-expanded="false"
+            aria-controls="mobile-nav"
+            aria-label="Open menu"
+          >
+            <span class="menu-bar"></span>
+            <span class="menu-bar"></span>
+          </button>
+        </div>
+        <script src="../shopify-cart-global.js"></script>
+      </div>
+      <div id="mobile-nav" class="mobile-nav" hidden>
+        <a href="../index.html">Home</a>
+        <a href="../the-drop/index.html">The Drop</a>
+        <a href="../about/index.html">About</a>
+        <a href="index.html" aria-current="page">Contact</a>
+      </div>
+    </header>
+
+    <main id="main">
+      <section class="contact-hero" aria-label="Contact">
+        <div class="contact-hero__frame contact-hero__frame--placeholder">
+          <div class="contact-hero__overlay" aria-hidden="true"></div>
+          <div class="contact-hero__content">
+            <h1 class="contact-hero__headline">Contact</h1>
+            <p class="contact-hero__sub">
+              Questions, orders, or just talking fishing — reach out anytime.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section class="contact-details section" aria-labelledby="contact-touch-heading">
+        <div class="container contact-details__inner">
+          <h2 id="contact-touch-heading" class="contact-details__title">Get in Touch</h2>
+          <div class="contact-details__blocks">
+            <div class="contact-block">
+              <span class="contact-block__label">Email</span>
+              <a class="contact-block__link" href="mailto:laytonsbaits@gmail.com"
+                >laytonsbaits@gmail.com</a
+              >
+            </div>
+            <div class="contact-block">
+              <span class="contact-block__label">Hours</span>
+              <p class="contact-block__text">
+                Monday – Friday<br />
+                8:00 AM – 4:00 PM
+              </p>
+            </div>
+          </div>
+          <p class="contact-details__note">I&apos;ll get back to you as soon as I can.</p>
+
+          <form id="contact-form" class="contact-form" novalidate>
+            <div class="contact-form__field">
+              <label class="contact-form__label" for="contact-name">Name</label>
+              <input
+                id="contact-name"
+                name="name"
+                type="text"
+                class="contact-form__input"
+                autocomplete="name"
+                required
+              />
+            </div>
+            <div class="contact-form__field">
+              <label class="contact-form__label" for="contact-email">Email</label>
+              <input
+                id="contact-email"
+                name="email"
+                type="email"
+                class="contact-form__input"
+                autocomplete="email"
+                required
+              />
+            </div>
+            <div class="contact-form__field">
+              <label class="contact-form__label" for="contact-message">Message</label>
+              <textarea
+                id="contact-message"
+                name="message"
+                class="contact-form__textarea"
+                rows="5"
+                required
+              ></textarea>
+            </div>
+            <button type="submit" class="contact-form__submit">Send Message</button>
+            <p
+              id="contact-form-feedback"
+              class="contact-form-feedback"
+              role="status"
+              aria-live="polite"
+            ></p>
+          </form>
+        </div>
+      </section>
+
+      <section class="contact-tagline section section--tight" aria-label="Tagline">
+        <p class="contact-tagline__text">Hand-poured. Field tested.</p>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="container footer-wrap">
+        <div class="footer-main">
+          <div class="footer-brand-block">
+            <span class="footer-brand">Layton&apos;s Baits</span>
+            <p class="footer-address">
+              Alabaster, AL<br />
+              Hand-poured. Field tested.
+            </p>
+          </div>
+          <nav class="footer-nav-columns" aria-label="Footer">
+            <div class="footer-links">
+              <span class="footer-heading">The Drop</span>
+              <a href="../the-drop/index.html">Shop the drop</a>
+              <a href="../index.html#week-drop">This week&apos;s preview</a>
+            </div>
+            <div class="footer-links">
+              <span class="footer-heading">Company</span>
+              <a href="../about/index.html">About</a>
+              <a href="#">Warranty</a>
+            </div>
+            <div class="footer-links">
+              <span class="footer-heading">Contact</span>
+              <a href="index.html" aria-current="page">Get in touch</a>
+              <a href="mailto:laytonsbaits@gmail.com">laytonsbaits@gmail.com</a>
+            </div>
+          </nav>
+        </div>
+        <div class="footer-bottom">
+          <p class="footer-note">© <span id="year"></span> Layton&apos;s Baits. All rights reserved.</p>
+          <div class="footer-legal">
+            <a href="#">Privacy</a>
+            <a href="#">Terms</a>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    <script src="../app.js"></script>
+  </body>
+</html>
