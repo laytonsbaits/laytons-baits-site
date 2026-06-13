@@ -252,58 +252,101 @@
 
   var shopDrop = document.querySelector(".shop-drop");
   if (shopDrop) {
-    var DROP_TYPE_BLURBS = {
-      "Stick Worm":
-        "Hand-poured stick worm with a soft, straight tail and a slow shimmy on slack line. Rig wacky, shaky, Neko, or weightless.",
-      "Trick Worm":
-        "Trick worm profile with a slightly buoyant tail for extra kick on the fall—ideal for shaky heads, Neko, and light Texas setups.",
-      Swimmer:
-        "Compact swimmer with a boot tail that pulses at slow rolls—great on swim jigs, vibrating jigs, and light Texas rigs.",
-      Craw:
-        "Craw-style body with kicking claws and a tidy footprint—use as a jig trailer or flip and pitch into cover.",
-    };
+    var SHOPIFY_STORE_DOMAIN = "6i3wir-s4.myshopify.com";
+    var SHOPIFY_STOREFRONT_TOKEN = "5d8f32e6a0f8a5c8acc9f6ca11aa47ab";
 
-    var DROP_FLAVOR_BLURBS = {
-      "Strawberry Jam":
-        "Strawberry Jam is a vivid red-wine tone with fine glitter for stained water and overcast days.",
-      "Melon Jam":
-        "Melon Jam blends watermelon-inspired greens and pinks with subtle flake for a natural look.",
-      "PB&J":
-        "PB&J layers warm brown and grape-jelly purple so your bait stands out without looking gimmicky.",
-      Blueberry:
-        "Blueberry is a deep purple-blue with micro flake—strong in clear to lightly stained water.",
-      Galaxy:
-        "Galaxy mixes black, purple, and blue flake for low light, docks, and muddy banks.",
-    };
+    function shopifyProductGid(numericId) {
+      return "gid://shopify/Product/" + numericId;
+    }
 
-    function dropCardDescriptionFromTitle(title) {
-      var sep = " – ";
-      var i = title.indexOf(sep);
-      if (i === -1) return "";
-      var baitType = title.slice(0, i).trim();
-      var flavor = title.slice(i + sep.length).trim();
-      var typePart = DROP_TYPE_BLURBS[baitType];
-      var flavorPart = DROP_FLAVOR_BLURBS[flavor];
-      if (!typePart || !flavorPart) return "";
-      return typePart + " " + flavorPart + " Five baits per bag.";
+    function stripHtml(html) {
+      if (!html) return "";
+      var el = document.createElement("div");
+      el.innerHTML = html;
+      return (el.textContent || el.innerText || "").trim();
+    }
+
+    function getShopifyProductIdFromCard(card) {
+      var script = card.querySelector(".shop-card__face--front script");
+      if (!script) return null;
+      var match = script.textContent.match(/id:\s*['"](\d+)['"]/);
+      return match ? match[1] : null;
+    }
+
+    function fetchShopifyProductDetails(productIds) {
+      var uniqueIds = productIds.filter(function (id, index, arr) {
+        return id && arr.indexOf(id) === index;
+      });
+      if (!uniqueIds.length) return Promise.resolve({});
+
+      var query =
+        "query DropProductDescriptions($ids: [ID!]!) {" +
+        "  nodes(ids: $ids) {" +
+        "    ... on Product { id title description descriptionHtml }" +
+        "  }" +
+        "}";
+
+      return fetch(
+        "https://" + SHOPIFY_STORE_DOMAIN + "/api/2024-01/graphql.json",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "X-Shopify-Storefront-Access-Token": SHOPIFY_STOREFRONT_TOKEN,
+          },
+          body: JSON.stringify({
+            query: query,
+            variables: { ids: uniqueIds.map(shopifyProductGid) },
+          }),
+        }
+      )
+        .then(function (res) {
+          return res.json();
+        })
+        .then(function (payload) {
+          var map = {};
+          if (!payload || !payload.data || !payload.data.nodes) return map;
+          payload.data.nodes.forEach(function (node) {
+            if (!node || !node.id) return;
+            var numericId = node.id.replace("gid://shopify/Product/", "");
+            var description = (node.description || "").trim();
+            if (!description && node.descriptionHtml) {
+              description = stripHtml(node.descriptionHtml);
+            }
+            map[numericId] = {
+              title: node.title || "",
+              description: description,
+            };
+          });
+          return map;
+        })
+        .catch(function () {
+          return {};
+        });
     }
 
     function initShopDropFlipCards() {
-      shopDrop.querySelectorAll(".shop-card--flip").forEach(function (card) {
-        card.setAttribute("role", "button");
-        var backName = card.querySelector(".shop-card__name--back");
-        var backDesc = card.querySelector(".shop-card__back-desc");
-        if (!backName || !backDesc) return;
-        var t = (card.getAttribute("data-drop-title") || "").trim();
-        if (!t) {
-          var frontName = card.querySelector(
-            ".shop-card__face--front .shop-card__name"
-          );
-          t = frontName ? frontName.textContent.trim() : "";
-        }
-        if (!t) return;
-        backName.textContent = t;
-        backDesc.textContent = dropCardDescriptionFromTitle(t);
+      var cards = Array.prototype.slice.call(
+        shopDrop.querySelectorAll(".shop-card--flip")
+      );
+      var productIds = cards.map(getShopifyProductIdFromCard).filter(Boolean);
+
+      fetchShopifyProductDetails(productIds).then(function (detailsById) {
+        cards.forEach(function (card) {
+          card.setAttribute("role", "button");
+          var backName = card.querySelector(".shop-card__name--back");
+          var backDesc = card.querySelector(".shop-card__back-desc");
+          if (!backName || !backDesc) return;
+
+          var productId = getShopifyProductIdFromCard(card);
+          var details = productId ? detailsById[productId] : null;
+          var fallbackTitle = (card.getAttribute("data-drop-title") || "").trim();
+
+          backName.textContent =
+            (details && details.title) || fallbackTitle || "";
+          backDesc.textContent =
+            (details && details.description) || "";
+        });
       });
     }
 

@@ -59,21 +59,33 @@
     <main id="main">
       <section class="hero" aria-label="Intro">
         <div class="hero-frame">
-          <img
-            class="hero-img"
-            src="hero.png"
-            alt=""
+          <video
+            class="hero-video"
+            autoplay
+            muted
+            loop
+            playsinline
+            poster="hero.png"
+            preload="auto"
             width="1920"
             height="1080"
-            decoding="async"
-            fetchpriority="high"
-          />
+            aria-hidden="true"
+          >
+            <source src="hero-drop.mp4" type="video/mp4" />
+          </video>
+          <div class="hero-overlay" aria-hidden="true"></div>
+          <div class="hero-content">
+            <p class="hero-kicker">Layton&apos;s Baits Presents</p>
+            <h1 class="hero-title">Next Drop</h1>
+            <p class="hero-date">06.22.26</p>
+            <a class="hero-cta" href="#week-drop">Shop The Drop</a>
+          </div>
         </div>
       </section>
 
       <section id="week-drop" class="week-drop section" aria-labelledby="week-drop-heading">
         <div class="container">
-          <h2 id="week-drop-heading" class="week-drop__title">This Week&apos;s Drop</h2>
+          <h2 id="week-drop-heading" class="week-drop__title">Current Drop</h2>
           <div
             class="week-drop__slideshow drop-slideshow"
             data-slideshow
