@@ -250,79 +250,84 @@
     });
   }
 
+  var SHOPIFY_STORE_DOMAIN = "6i3wir-s4.myshopify.com";
+  var SHOPIFY_STOREFRONT_TOKEN = "5d8f32e6a0f8a5c8acc9f6ca11aa47ab";
+
+  function shopifyProductGid(numericId) {
+    return "gid://shopify/Product/" + numericId;
+  }
+
+  function stripHtml(html) {
+    if (!html) return "";
+    var el = document.createElement("div");
+    el.innerHTML = html;
+    return (el.textContent || el.innerText || "").trim();
+  }
+
+  function fetchShopifyProductNodes(productIds) {
+    var uniqueIds = productIds.filter(function (id, index, arr) {
+      return id && arr.indexOf(id) === index;
+    });
+    if (!uniqueIds.length) return Promise.resolve({});
+
+    var query =
+      "query DropProducts($ids: [ID!]!) {" +
+      "  nodes(ids: $ids) {" +
+      "    ... on Product {" +
+      "      id title description descriptionHtml" +
+      "      featuredImage { url altText }" +
+      "    }" +
+      "  }" +
+      "}";
+
+    return fetch(
+      "https://" + SHOPIFY_STORE_DOMAIN + "/api/2024-01/graphql.json",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-Shopify-Storefront-Access-Token": SHOPIFY_STOREFRONT_TOKEN,
+        },
+        body: JSON.stringify({
+          query: query,
+          variables: { ids: uniqueIds.map(shopifyProductGid) },
+        }),
+      }
+    )
+      .then(function (res) {
+        return res.json();
+      })
+      .then(function (payload) {
+        var map = {};
+        if (!payload || !payload.data || !payload.data.nodes) return map;
+        payload.data.nodes.forEach(function (node) {
+          if (!node || !node.id) return;
+          var numericId = node.id.replace("gid://shopify/Product/", "");
+          var description = (node.description || "").trim();
+          if (!description && node.descriptionHtml) {
+            description = stripHtml(node.descriptionHtml);
+          }
+          map[numericId] = {
+            title: node.title || "",
+            description: description,
+            imageUrl: node.featuredImage ? node.featuredImage.url : "",
+            imageAlt: node.featuredImage ? node.featuredImage.altText || "" : "",
+          };
+        });
+        return map;
+      })
+      .catch(function () {
+        return {};
+      });
+  }
+
   var shopDrop = document.querySelector(".shop-drop");
   if (shopDrop) {
-    var SHOPIFY_STORE_DOMAIN = "6i3wir-s4.myshopify.com";
-    var SHOPIFY_STOREFRONT_TOKEN = "5d8f32e6a0f8a5c8acc9f6ca11aa47ab";
-
-    function shopifyProductGid(numericId) {
-      return "gid://shopify/Product/" + numericId;
-    }
-
-    function stripHtml(html) {
-      if (!html) return "";
-      var el = document.createElement("div");
-      el.innerHTML = html;
-      return (el.textContent || el.innerText || "").trim();
-    }
-
     function getShopifyProductIdFromCard(card) {
       var script = card.querySelector(".shop-card__face--front script");
       if (!script) return null;
       var match = script.textContent.match(/id:\s*['"](\d+)['"]/);
       return match ? match[1] : null;
-    }
-
-    function fetchShopifyProductDetails(productIds) {
-      var uniqueIds = productIds.filter(function (id, index, arr) {
-        return id && arr.indexOf(id) === index;
-      });
-      if (!uniqueIds.length) return Promise.resolve({});
-
-      var query =
-        "query DropProductDescriptions($ids: [ID!]!) {" +
-        "  nodes(ids: $ids) {" +
-        "    ... on Product { id title description descriptionHtml }" +
-        "  }" +
-        "}";
-
-      return fetch(
-        "https://" + SHOPIFY_STORE_DOMAIN + "/api/2024-01/graphql.json",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "X-Shopify-Storefront-Access-Token": SHOPIFY_STOREFRONT_TOKEN,
-          },
-          body: JSON.stringify({
-            query: query,
-            variables: { ids: uniqueIds.map(shopifyProductGid) },
-          }),
-        }
-      )
-        .then(function (res) {
-          return res.json();
-        })
-        .then(function (payload) {
-          var map = {};
-          if (!payload || !payload.data || !payload.data.nodes) return map;
-          payload.data.nodes.forEach(function (node) {
-            if (!node || !node.id) return;
-            var numericId = node.id.replace("gid://shopify/Product/", "");
-            var description = (node.description || "").trim();
-            if (!description && node.descriptionHtml) {
-              description = stripHtml(node.descriptionHtml);
-            }
-            map[numericId] = {
-              title: node.title || "",
-              description: description,
-            };
-          });
-          return map;
-        })
-        .catch(function () {
-          return {};
-        });
     }
 
     function initShopDropFlipCards() {
@@ -331,7 +336,7 @@
       );
       var productIds = cards.map(getShopifyProductIdFromCard).filter(Boolean);
 
-      fetchShopifyProductDetails(productIds).then(function (detailsById) {
+      fetchShopifyProductNodes(productIds).then(function (detailsById) {
         cards.forEach(function (card) {
           card.setAttribute("role", "button");
           var backName = card.querySelector(".shop-card__name--back");
@@ -387,89 +392,163 @@
 
   var slideshowRoot = document.querySelector("[data-slideshow]");
   if (slideshowRoot) {
-    var slides = slideshowRoot.querySelectorAll(".drop-slideshow__slide");
-    var prevBtn = slideshowRoot.querySelector("[data-slideshow-prev]");
-    var nextBtn = slideshowRoot.querySelector("[data-slideshow-next]");
-    var dotsWrap = slideshowRoot.querySelector("[data-slideshow-dots]");
-    var n = slides.length;
-    var idx = 0;
-    var timer = null;
-    var intervalMs = 5500;
+    var track = slideshowRoot.querySelector("[data-slideshow-track]");
+    var productIdsAttr =
+      track && track.getAttribute("data-slideshow-products");
+    var slideshowProductIds = productIdsAttr
+      ? productIdsAttr.split(",").map(function (id) {
+          return id.trim();
+        }).filter(Boolean)
+      : [];
 
-    function setSlide(i) {
-      idx = (i + n) % n;
-      slides.forEach(function (slide, j) {
-        var on = j === idx;
-        slide.classList.toggle("is-active", on);
-        slide.setAttribute("aria-hidden", on ? "false" : "true");
+    function buildSlideshowSlides(productsById) {
+      if (!track) return;
+      track.innerHTML = "";
+      var slideIndex = 0;
+
+      slideshowProductIds.forEach(function (productId) {
+        var product = productsById[productId];
+        if (!product || !product.imageUrl) return;
+
+        var slide = document.createElement("article");
+        slide.className =
+          "drop-slideshow__slide" + (slideIndex === 0 ? " is-active" : "");
+        slide.setAttribute("data-slide", String(slideIndex));
+        slide.setAttribute("role", "group");
+        slide.setAttribute("aria-roledescription", "slide");
+        if (slideIndex !== 0) slide.setAttribute("aria-hidden", "true");
+        slide.setAttribute(
+          "aria-label",
+          "Slide " + (slideIndex + 1) + ": " + (product.title || "Product")
+        );
+
+        var frame = document.createElement("div");
+        frame.className = "drop-slideshow__slide-frame";
+
+        var img = document.createElement("img");
+        img.className = "drop-slideshow__img";
+        img.src = product.imageUrl;
+        img.alt =
+          product.imageAlt ||
+          product.title ||
+          "Layton\u2019s Baits product";
+        img.width = 1200;
+        img.height = 675;
+        img.decoding = "async";
+        img.loading = slideIndex === 0 ? "eager" : "lazy";
+        if (slideIndex === 0) img.setAttribute("fetchpriority", "high");
+        img.onerror = function () {
+          img.classList.add("drop-slideshow__img--missing");
+        };
+
+        frame.appendChild(img);
+        slide.appendChild(frame);
+        track.appendChild(slide);
+        slideIndex += 1;
       });
-      if (dotsWrap) {
-        dotsWrap.querySelectorAll(".drop-slideshow__dot").forEach(function (dot, j) {
-          dot.classList.toggle("is-active", j === idx);
-          dot.setAttribute("aria-pressed", j === idx ? "true" : "false");
+
+      var builtSlides = track.querySelectorAll(".drop-slideshow__slide");
+      builtSlides.forEach(function (slide, i) {
+        var label = slide.getAttribute("aria-label") || "Product";
+        var titlePart = label.replace(/^Slide \d+: /, "");
+        slide.setAttribute(
+          "aria-label",
+          "Slide " + (i + 1) + " of " + builtSlides.length + ": " + titlePart
+        );
+      });
+    }
+
+    function initDropSlideshow() {
+      var slides = slideshowRoot.querySelectorAll(".drop-slideshow__slide");
+      var prevBtn = slideshowRoot.querySelector("[data-slideshow-prev]");
+      var nextBtn = slideshowRoot.querySelector("[data-slideshow-next]");
+      var dotsWrap = slideshowRoot.querySelector("[data-slideshow-dots]");
+      var n = slides.length;
+      if (n === 0) return;
+      var idx = 0;
+      var timer = null;
+      var intervalMs = 5500;
+
+      function setSlide(i) {
+        idx = (i + n) % n;
+        slides.forEach(function (slide, j) {
+          var on = j === idx;
+          slide.classList.toggle("is-active", on);
+          slide.setAttribute("aria-hidden", on ? "false" : "true");
         });
-      }
-    }
-
-    function next() {
-      setSlide(idx + 1);
-    }
-
-    function prev() {
-      setSlide(idx - 1);
-    }
-
-    function startAutoplay() {
-      stopAutoplay();
-      timer = window.setInterval(next, intervalMs);
-    }
-
-    function stopAutoplay() {
-      if (timer) {
-        window.clearInterval(timer);
-        timer = null;
-      }
-    }
-
-    if (dotsWrap && n > 0) {
-      dotsWrap.innerHTML = "";
-      for (var d = 0; d < n; d++) {
-        (function (j) {
-          var b = document.createElement("button");
-          b.type = "button";
-          b.className = "drop-slideshow__dot" + (j === 0 ? " is-active" : "");
-          b.setAttribute("aria-label", "Go to slide " + (j + 1));
-          b.setAttribute("aria-pressed", j === 0 ? "true" : "false");
-          b.addEventListener("click", function () {
-            setSlide(j);
-            startAutoplay();
+        if (dotsWrap) {
+          dotsWrap.querySelectorAll(".drop-slideshow__dot").forEach(function (dot, j) {
+            dot.classList.toggle("is-active", j === idx);
+            dot.setAttribute("aria-pressed", j === idx ? "true" : "false");
           });
-          dotsWrap.appendChild(b);
-        })(d);
+        }
+      }
+
+      function next() {
+        setSlide(idx + 1);
+      }
+
+      function prev() {
+        setSlide(idx - 1);
+      }
+
+      function startAutoplay() {
+        stopAutoplay();
+        timer = window.setInterval(next, intervalMs);
+      }
+
+      function stopAutoplay() {
+        if (timer) {
+          window.clearInterval(timer);
+          timer = null;
+        }
+      }
+
+      if (dotsWrap && n > 0) {
+        dotsWrap.innerHTML = "";
+        for (var d = 0; d < n; d++) {
+          (function (j) {
+            var b = document.createElement("button");
+            b.type = "button";
+            b.className = "drop-slideshow__dot" + (j === 0 ? " is-active" : "");
+            b.setAttribute("aria-label", "Go to slide " + (j + 1));
+            b.setAttribute("aria-pressed", j === 0 ? "true" : "false");
+            b.addEventListener("click", function () {
+              setSlide(j);
+              startAutoplay();
+            });
+            dotsWrap.appendChild(b);
+          })(d);
+        }
+      }
+
+      if (prevBtn) prevBtn.addEventListener("click", function () {
+        prev();
+        startAutoplay();
+      });
+      if (nextBtn) nextBtn.addEventListener("click", function () {
+        next();
+        startAutoplay();
+      });
+
+      slideshowRoot.addEventListener("mouseenter", stopAutoplay);
+      slideshowRoot.addEventListener("mouseleave", startAutoplay);
+      slideshowRoot.addEventListener("focusin", stopAutoplay);
+      slideshowRoot.addEventListener("focusout", function () {
+        window.setTimeout(function () {
+          if (!slideshowRoot.contains(document.activeElement)) startAutoplay();
+        }, 0);
+      });
+
+      setSlide(0);
+      if (n > 1 && window.matchMedia("(prefers-reduced-motion: no-preference)").matches) {
+        startAutoplay();
       }
     }
 
-    if (prevBtn) prevBtn.addEventListener("click", function () {
-      prev();
-      startAutoplay();
+    fetchShopifyProductNodes(slideshowProductIds).then(function (productsById) {
+      buildSlideshowSlides(productsById);
+      initDropSlideshow();
     });
-    if (nextBtn) nextBtn.addEventListener("click", function () {
-      next();
-      startAutoplay();
-    });
-
-    slideshowRoot.addEventListener("mouseenter", stopAutoplay);
-    slideshowRoot.addEventListener("mouseleave", startAutoplay);
-    slideshowRoot.addEventListener("focusin", stopAutoplay);
-    slideshowRoot.addEventListener("focusout", function () {
-      window.setTimeout(function () {
-        if (!slideshowRoot.contains(document.activeElement)) startAutoplay();
-      }, 0);
-    });
-
-    setSlide(0);
-    if (n > 1 && window.matchMedia("(prefers-reduced-motion: no-preference)").matches) {
-      startAutoplay();
-    }
   }
 })();
